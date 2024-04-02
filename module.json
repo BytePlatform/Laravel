@@ -1,0 +1,12 @@
+{
+  "id": "module-laravel-aec42bc6-8915-4018-8441-0648db7151d03018747",
+  "name": "laravel",
+  "version": "v1.0.0",
+  "alias": "laravel",
+  "description": "",
+  "keywords": [],
+  "priority": 0,
+  "aliases": {},
+  "namespace": "Sokeio\\Laravel",
+  "requires": []
+}
