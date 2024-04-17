@@ -3,35 +3,36 @@
 namespace Sokeio\Laravel;
 
 use Illuminate\Support\Traits\Macroable;
+
 trait WithCallback
 {
     use Macroable;
-    private $__data = [];
-    private $__dataCache = [];
-    private $__disableCache = false;
-    public function DisableCache()
+    private $callbackData = [];
+    private $callbackDataCache = [];
+    private $callbackDisableCache = false;
+    public function disableCache()
     {
-        $this->__disableCache = true;
+        $this->callbackDisableCache = true;
         return $this;
     }
-    public function EnableCache()
+    public function enableCache()
     {
-        $this->__disableCache = false;
+        $this->callbackDisableCache = false;
         return $this;
     }
-    public function Clear()
+    public function clear()
     {
-        $this->__data = [];
-        $this->__dataCache = [];
+        $this->callbackData = [];
+        $this->callbackDataCache = [];
         return $this;
     }
-    public function ClearCache()
+    public function clearCache()
     {
-        $this->__dataCache = [];
+        $this->callbackDataCache = [];
         return $this;
     }
     private $manager;
-    public function Manager($manager)
+    public function manager($manager)
     {
         $this->manager = $manager;
         return $this;
@@ -45,26 +46,31 @@ trait WithCallback
         if ($valueOrCallback && !is_string($valueOrCallback) && is_callable($valueOrCallback)) {
             return  $valueOrCallback($this, $this->getManager());
         }
-        if ($valueOrCallback &&  is_object($valueOrCallback) && method_exists($valueOrCallback, 'Manager')) {
-            $valueOrCallback->Manager($this->getManager());
+        if ($valueOrCallback && is_object($valueOrCallback) && method_exists($valueOrCallback, 'manager')) {
+            $valueOrCallback->manager($this->getManager());
         }
         return $valueOrCallback;
     }
     protected function checkKey($__key)
     {
-        return  isset($this->__data[$__key]);
+        return  isset($this->callbackData[$__key]);
     }
     protected function getValue($__key, $__default = null, $withoutCache = false)
     {
-        if (!$this->__disableCache && !$withoutCache && isset($this->__dataCache[$__key])) return $this->__dataCache[$__key];
-        $valueOrCallback = $this->checkKey($__key) ? $this->__data[$__key] : $__default;
-        return ($this->__dataCache[$__key] = ($this->getValueByCallback($valueOrCallback) ?? $__default));
+        if (!$this->callbackDisableCache && !$withoutCache && isset($this->callbackDataCache[$__key])) {
+            return $this->callbackDataCache[$__key];
+        }
+        $valueOrCallback = $this->checkKey($__key) ? $this->callbackData[$__key] : $__default;
+        $this->callbackDataCache[$__key] = ($this->getValueByCallback($valueOrCallback) ?? $__default);
+        return $this->callbackDataCache[$__key];
     }
     protected function setKeyValue($__key, $value, $safeKey = false)
     {
-        if (!isset($this->__data[$__key]) ||  !$safeKey) {
-            $this->__data[$__key] = $value;
-            if (isset($this->__dataCache[$__key])) unset($this->__dataCache[$__key]);
+        if (!isset($this->callbackData[$__key]) ||  !$safeKey) {
+            $this->callbackData[$__key] = $value;
+            if (isset($this->callbackDataCache[$__key])) {
+                unset($this->callbackDataCache[$__key]);
+            }
         }
         return $this;
     }

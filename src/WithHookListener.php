@@ -7,7 +7,7 @@ use Illuminate\Support\Arr;
 
 trait WithHookListener
 {
-/**
+    /**
      * Holds the event listeners
      *
      * @var array
@@ -24,7 +24,7 @@ trait WithHookListener
      */
     public function addListener($hook, $callback, int $priority = 20, int $arguments = 1)
     {
-        if (! is_array($hook)) {
+        if (!is_array($hook)) {
             $hook = [$hook];
         }
 
@@ -72,20 +72,13 @@ trait WithHookListener
      */
     protected function getFunction($callback)
     {
-        if (is_string($callback)) {
-            if (strpos($callback, '@')) {
+        if (is_string($callback) || $callback instanceof Closure || is_array($callback)) {
+            if (is_string($callback) && strpos($callback, '@')) {
                 $callback = explode('@', $callback);
-
-                return [app('\\'.$callback[0]), $callback[1]];
+                $callback = [app('\\' . $callback[0]), $callback[1]];
             }
-
-            return $callback;
-        } elseif ($callback instanceof Closure) {
-            return $callback;
-        } elseif (is_array($callback)) {
             return $callback;
         }
-
         return false;
     }
 
@@ -95,5 +88,7 @@ trait WithHookListener
      * @param  string  $action Name of action
      * @param  array  $args Arguments passed to the action
      */
-    public function fire(string $action, array $args){}
+    public function fire(string $action, array $args)
+    {
+    }
 }

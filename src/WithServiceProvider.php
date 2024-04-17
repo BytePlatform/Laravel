@@ -250,20 +250,25 @@ trait WithServiceProvider
 
     public function registeringPackage()
     {
+        //Do nothing
     }
     public function configurePackaged()
     {
+        //Do nothing
     }
     public function packageRegistered()
     {
+        //Do nothing
     }
 
     public function bootingPackage()
     {
+        //Do nothing
     }
 
     public function packageBooted()
     {
+        //Do nothing
     }
 
     protected function getPackageBaseDir(): string
